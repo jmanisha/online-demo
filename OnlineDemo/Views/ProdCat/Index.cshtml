@@ -1,0 +1,82 @@
+﻿@model OnlineDemo.Models.ProCatViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">    
+    <div class="form-horizontal">
+        <h4>Product Category Data</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Product Id</th>
+                    <th>Product Name</th>
+                    <th>Category Id</th>
+                    <th>Category Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--Binding the data in the List-->
+                @if (Model.ViewModel != null)
+                {
+                    for (int i = 0; i < Model.ViewModel.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.ViewModel[i].ProductId</td>
+                            <td>@Model.ViewModel[i].ProductName</td>
+                            <td>@Model.ViewModel[i].CategoryId</td>
+                            <td>@Model.ViewModel[i].CategoryName</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        <!-- Paging -->
+        @if (Model.pager.EndPage > 1)
+        {
+            <ul class="pagination">
+                <!--If Current page is not the First Page, we will show Button/Link to go First or on Previous page-->
+                @if (Model.pager.CurrentPage > 1)
+                {
+                    <li>
+                        <a href="~/ProdCat/Index">First</a>
+                    </li>
+                    <li>
+                        <a href="~/ProdCat/Index?page=@(Model.pager.CurrentPage - 1)">Previous</a>
+                    </li>
+                }
+                <!--Paging from StartPage to the end Page-->
+                @for (var page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+                {
+                    <li class="@(page == Model.pager.CurrentPage ? "active" : "")">
+                        <a href="~/ProdCat/Index?page=@page">@page</a>
+                    </li>
+                }
+                <!--If Current Page is not the Last Page then show Next and Last Button/link on Paging-->
+                @if (Model.pager.CurrentPage < Model.pager.TotalPages)
+                {
+                    <li>
+                        <a href="~/ProdCat/Index?page=@(Model.pager.CurrentPage + 1)">Next</a>
+                    </li>
+                    <li>
+                        <a href="~/ProdCat/Index?page=@(Model.pager.TotalPages)">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+

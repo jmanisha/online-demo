@@ -1,0 +1,25 @@
+﻿@model OnlineDemo.Models.ProductCategoryViewModel
+
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>New Product</h2>
+@using (Html.BeginForm("Save", "Product"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Product.ProductName)
+        @Html.TextBoxFor(m => m.Product.ProductName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m=>m.Product.ProductName)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Product.CategoryId)
+        @Html.DropDownListFor(m => m.Product.CategoryId, new SelectList(Model.Categories, "CategoryId", "CategoryName"), "---Select CategoryType---", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m=>m.Product.CategoryId)
+    </div>
+    @Html.HiddenFor(m=>m.Product.ProductId)
+    <button type="submit" class="btn btn-primary">Save</button>
+
+}
+

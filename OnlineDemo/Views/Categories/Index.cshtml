@@ -1,0 +1,77 @@
+﻿@model IEnumerable<OnlineDemo.Models.Categories>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Category List</h2>
+<div class="form-group">
+    @Html.ActionLink("Add Category", "New")
+</div>
+@if (!Model.Any())
+{
+    <h3>Sorry, We dont have any Category yet.</h3>
+}
+else
+{
+    <table class="table table-bordered table-hover" id="tblCategory">
+        <thead>
+            <tr>
+                <th>Category Id</th>
+                <th>Category Name</th>
+                <th colspan="2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td><span>@category.CategoryId</span></td>
+                    <td><span>@category.CategoryName</span></td>
+                    <td><span>@Html.ActionLink("Edit", "Edit", new { id = category.CategoryId })</span></td>
+                    <td><a class="Delete" href="javascript:;">Delete</a></td>
+                    @*<td><a class="Delete" href="javascript:;" onclick="ConfirmDelete(@category.CategoryId)">Delete</a></td>*@
+                </tr>
+            }
+
+        </tbody>
+    </table>
+    <input type="hidden" id="hiddenCategoryId" />
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        $('body').on('click', '#tblCategory .Delete', function () {
+            if (confirm("Do you want to delete this row?")) {
+                var row = $(this).closest('tr');
+                var productId = row.find("span").html();
+                alert(productId)
+                //console.log(productId);
+                $.ajax({
+                    type: "POST",
+                    url: "/Categories/DeleteCat",
+                    data: "{CatId: " + productId + "}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        alert('hi')
+                        if ($("#tblCategory tr").length > 2) {
+                            row.remove();
+                        } else {
+                            row.find(".Delete").hide();
+                            row.find('td').html('&nbsp')
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        //console.log(XMLHttpRequest)
+                        //alert('error occured')
+                    }
+
+                })
+            }
+        })
+    </script>
+}
+
+
+

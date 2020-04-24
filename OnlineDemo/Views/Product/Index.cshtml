@@ -1,0 +1,71 @@
+﻿@model IEnumerable<OnlineDemo.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Product List</h2>
+@Html.ActionLink("Add Product", "New")
+@if (!Model.Any())
+{
+    <h3>Sorry, We dont have any products yet.</h3>
+}
+else
+{
+    <table class="table table-bordered table-hover" id="tblProduct">
+        <thead>
+            <tr>
+                <th>Product Id</th>
+                <th>Product Name</th>
+                <th colspan="2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+                {
+                <tr>
+                    <td>@product.ProductId</td>
+                    <td>@product.ProductName</td>
+                    <td>@Html.ActionLink("Edit", "Edit", new { id = product.ProductId })</td>
+                    <td><a class="Delete" href="javascript:;">Delete</a></td>
+                    @*<td>@Html.ActionLink("Delete", "Delete", new {id = product.ProductId})</td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        $('body').on('click', '#tblProduct .Delete', function () {
+            if (confirm("Do you want to delete this row?")) {
+                var row = $(this).closest('tr');                                
+                var productId = row.find("td").html();
+                //console.log(productId);
+                $.ajax({
+                    type: "POST",
+                    url: "/Product/DeleteProduct",
+                    data: "{ProductId: " + productId + "}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        alert('hi')
+                        if ($("#tblProduct tr").length > 2) {
+                            row.remove();
+                        } else {
+                            row.find(".Delete").hide();
+                            row.find('td').html('&nbsp')
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        //console.log(XMLHttpRequest)
+                        //alert('error occured')
+                    }
+
+                })
+            }
+        })
+    </script>
+}
+
